@@ -1,0 +1,23 @@
+POST localhost:9000/orders
+Content-Type: application/json
+
+{
+  "customerId": "8d07abfc-c3cf-4651-a77d-f6037377f06b",
+  "itemId": "item1",
+  "quantity": 1
+}
+
+
+###
+POST localhost:9000/orders
+Content-Type: application/json
+
+{
+  "customerId": "8d07abfc-c3cf-4651-a77d-f6037377f06b",
+  "itemId": "item-not-found",
+  "quantity": 3
+}
+
+
+###
+GET localhost:9000/orders/563527ab-d0a0-4f48-a12f-34d8bc1fdfed

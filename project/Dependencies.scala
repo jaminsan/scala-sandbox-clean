@@ -35,13 +35,16 @@ object Dependencies {
   lazy val http4sDsl         = "org.http4s" %% "http4s-dsl"          % "1.0.0-M5"
   lazy val circeGenerics     = "io.circe"   %% "circe-generic"       % "0.13.0"
 
-  lazy val scalikeJdbcCore   = "org.scalikejdbc" %% "scalikejdbc"        % "3.5.0"
-  lazy val scalikeJdbcConfig = "org.scalikejdbc" %% "scalikejdbc-config" % "3.5.0"
-  lazy val doobieCore        = "org.tpolecat"    %% "doobie-core"        % "0.9.0"
-  lazy val doobieHikari      = "org.tpolecat"    %% "doobie-hikari"      % "0.9.0"
-  lazy val doobiePostgresql  = "org.tpolecat"    %% "doobie-postgres"    % "0.9.0"
-  lazy val skunk             = "org.tpolecat"    %% "skunk-core"         % "0.0.20"
+  lazy val scalikeJdbcCore            = "org.scalikejdbc" %% "scalikejdbc"                  % "3.5.0"
+  lazy val scalikeJdbcConfig          = "org.scalikejdbc" %% "scalikejdbc-config"           % "3.5.0"
+  lazy val scalikeJdbcPlayInitializer = "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.8.0-scalikejdbc-3.5"
+  lazy val doobieCore                 = "org.tpolecat"    %% "doobie-core"                  % "0.9.0"
+  lazy val doobieHikari               = "org.tpolecat"    %% "doobie-hikari"                % "0.9.0"
+  lazy val doobiePostgresql           = "org.tpolecat"    %% "doobie-postgres"              % "0.9.0"
+  lazy val skunk                      = "org.tpolecat"    %% "skunk-core"                   % "0.0.20"
 
   lazy val mysql      = "mysql"          % "mysql-connector-java" % "8.0.18"
   lazy val postgresql = "org.postgresql" % "postgresql"           % "42.2.18"
+
+  lazy val logbackOneLiner = "com.github.roundrop" % "logback-oneline-converter" % "1.1.0"
 }

@@ -5,18 +5,27 @@ ThisBuild / version := "1.0.0"
 ThisBuild / organization := "com.example"
 ThisBuild / organizationName := "example"
 
-lazy val domain = (project in file("domain"))
+lazy val domain  = (project in file("domain"))
   .settings(commonSettings: _*)
 
-lazy val simple = (project in file("simple"))
+lazy val playApp = (project in file("playApp"))
   .settings(
-    name := "simple",
+    name := "playApp",
     libraryDependencies ++= Seq(
+      guice,
       scalikeJdbcCore,
+      scalikeJdbcConfig,
+      scalikeJdbcPlayInitializer,
+      postgresql,
       scalaTestCore % Test,
       scalamock     % Test
-    )
+    ),
+    play.sbt.PlayInternalKeys.playCompileEverything ~= (_.map(
+      _.copy(compilations = sbt.internal.inc.Compilations.of(Seq.empty))))
   )
+  .enablePlugins(PlayScala)
+  .disablePlugins(PlayLayoutPlugin)
+  .dependsOn(domain)
 
 lazy val abstractTypeMember = (project in file("abstractTypeMember"))
   .settings(
@@ -44,8 +53,8 @@ lazy val zio = (project in file("zio"))
   )
 
 lazy val commonSettings = Seq(
-  Test / fork := true,
-  Test / parallelExecution := true,
+//  Test / fork := true,
+//  Test / parallelExecution := true,
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
@@ -59,6 +68,7 @@ lazy val commonSettings = Seq(
     "UTF-8",
     "-language:higherKinds",
     "-language:postfixOps",
+    "-language:implicitConversions",
     "-feature",
     "-Xfatal-warnings"
   ),
