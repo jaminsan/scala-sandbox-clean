@@ -3,11 +3,12 @@ import sbt._
 object Dependencies {
   lazy val logbackClassic = "ch.qos.logback" % "logback-classic" % "0.13.0"
 
-  lazy val scalaTestCore = "org.scalatest" %% "scalatest"     % "3.2.2"
-  lazy val mUnit         = "org.scalameta" %% "munit"         % "0.7.17"
-  lazy val specs2Core    = "org.specs2"    %% "specs2-core"   % "4.10.0"
-  lazy val mockitoScala  = "org.mockito"   %% "mockito-scala" % "1.16.3"
-  lazy val scalamock     = "org.scalamock" %% "scalamock"     % "4.4.0"
+  lazy val scalaTestCore         = "org.scalatest" %% "scalatest"               % "3.2.2"
+  lazy val mUnit                 = "org.scalameta" %% "munit"                   % "0.7.17"
+  lazy val specs2Core            = "org.specs2"    %% "specs2-core"             % "4.10.0"
+  lazy val mockitoScala          = "org.mockito"   %% "mockito-scala"           % "1.16.3"
+  lazy val mockitoScalaScalaTest = "org.mockito"   %% "mockito-scala-scalatest" % "1.16.3"
+  lazy val scalamock             = "org.scalamock" %% "scalamock"               % "4.4.0"
 
   lazy val testcontainersScalaTest  = "com.dimafeng" %% "testcontainers-scala-scalatest"  % "0.38.6"
   lazy val testcontainersScalaMunit = "com.dimafeng" %% "testcontainers-scala-scalatest"  % "0.38.6"

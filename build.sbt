@@ -17,8 +17,10 @@ lazy val playApp = (project in file("playApp"))
       scalikeJdbcConfig,
       scalikeJdbcPlayInitializer,
       postgresql,
-      scalaTestCore % Test,
-      scalamock     % Test
+      scalaTestCore         % Test,
+      scalamock             % Test,
+      mockitoScala          % Test,
+      mockitoScalaScalaTest % Test
     ),
     play.sbt.PlayInternalKeys.playCompileEverything ~= (_.map(
       _.copy(compilations = sbt.internal.inc.Compilations.of(Seq.empty))))
