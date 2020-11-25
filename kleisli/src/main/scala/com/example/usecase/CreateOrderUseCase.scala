@@ -2,20 +2,18 @@ package com.example.usecase
 
 import java.util.UUID
 
+import cats.MonadError
+import cats.implicits._
 import com.example.domain.{ ItemStock, Order, OrderItem }
-import com.example.port.{ IOContext, ItemStockPort, OrderPort }
+import com.example.port.{ ItemStockPort, OrderPort }
 import com.example.usecase.CreateOrderUseCase.ItemStockNotFound
-import javax.inject.{ Inject, Singleton }
 
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.chaining.scalaUtilChainingOps
 
-@Singleton
-class CreateOrderUseCase @Inject() (itemStockPort: ItemStockPort, orderPort: OrderPort) {
+class CreateOrderUseCase[F[_]](private val itemStockPort: ItemStockPort[F], private val orderPort: OrderPort[F])(
+    implicit ME:                                          MonadError[F, Throwable]) {
 
-  def run(customerId: String, itemId:    String, quantity: Int)(implicit
-      ctx:            IOContext,
-      ec:             ExecutionContext): Future[Order]    =
+  def run(customerId: String, itemId: String, quantity: Int): F[Order] =
     for {
       itemStock  <- itemStockPort.findByItemId(itemId) getOrFailWith ItemStockNotFound(itemId)
       _          <- ItemStock.sub(itemStock, quantity) pipe itemStockPort.save
