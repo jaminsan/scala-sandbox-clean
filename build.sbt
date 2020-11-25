@@ -41,8 +41,18 @@ lazy val eitherT = (project in file("eitherT"))
 
 lazy val kleisli = (project in file("kleisli"))
   .settings(
-    name := "kleisli"
+    name := "kleisli",
+    libraryDependencies ++= Seq(
+      guice,
+      catsCore,
+      scalaTestCore,
+      scalikeJdbcCore,
+      scalamock
+    )
   )
+  .enablePlugins(PlayScala)
+  .disablePlugins(PlayLayoutPlugin)
+  .dependsOn(domain)
 
 lazy val freer = (project in file("freer"))
   .settings(

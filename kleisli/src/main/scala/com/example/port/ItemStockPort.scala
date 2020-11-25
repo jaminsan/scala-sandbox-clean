@@ -7,5 +7,4 @@ trait ItemStockPort[F[_]] {
   def findByItemId(itemId: String): F[Option[ItemStock]]
 
   def save(itemStock: ItemStock): F[ItemStock]
-
 }
