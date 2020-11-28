@@ -1,3 +1,7 @@
+create database test;
+
+\c test;
+
 create table order_ (
     order_id text not null,
     customer_id text not null,

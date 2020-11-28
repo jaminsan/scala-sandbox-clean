@@ -5,29 +5,91 @@ ThisBuild / version := "1.0.0"
 ThisBuild / organization := "com.example"
 ThisBuild / organizationName := "example"
 
-lazy val domain  = (project in file("domain"))
+lazy val domain           = (project in file("domain"))
   .settings(commonSettings: _*)
 
-lazy val playApp = (project in file("playApp"))
+lazy val playAppExtension = (project in file("playApp/extension"))
   .settings(
-    name := "playApp",
+    name := "playAppExtension"
+  )
+  .settings(commonSettings: _*)
+
+lazy val playAppDriver    = (project in file("playApp/driver"))
+  .settings(
+    name := "playAppDriver",
+    libraryDependencies ++= Seq(
+      guice,
+      scalikeJdbcCore,
+      scalaTestCore % Test,
+      scalamock     % Test
+    )
+  )
+  .dependsOn(playAppExtension)
+  .settings(commonSettings: _*)
+
+lazy val playAppPort      = (project in file("playApp/port"))
+  .settings(
+    name := "playAppPort"
+  )
+  .dependsOn(domain, playAppExtension)
+
+lazy val playAppUseCase = (project in file("playApp/usecase"))
+  .settings(
+    name := "playAppUseCase",
+    libraryDependencies ++= Seq(
+      guice,
+      scalaTestCore % Test,
+      scalamock     % Test
+    )
+  )
+  .dependsOn(domain, playAppExtension % "test->test;compile->compile", playAppPort)
+  .settings(commonSettings: _*)
+
+lazy val playAppGateway = (project in file("playApp/gateway"))
+  .settings(
+    name := "playAppGateway",
+    libraryDependencies ++= Seq(
+      guice,
+      scalaTestCore % Test,
+      scalamock     % Test
+    )
+  )
+  .dependsOn(domain, playAppExtension, playAppPort, playAppDriver)
+  .settings(commonSettings: _*)
+
+def nonRootPlayProjects = Seq(
+  domain,
+  playAppExtension,
+  playAppPort,
+  playAppUseCase,
+  playAppDriver,
+  playAppGateway
+)
+
+lazy val playAppRest        = (project in file("playApp/rest"))
+  .settings(
+    name := "playAppRest",
     libraryDependencies ++= Seq(
       guice,
       scalikeJdbcCore,
       scalikeJdbcConfig,
-      scalikeJdbcPlayInitializer,
-      postgresql,
-      scalaTestCore         % Test,
-      scalamock             % Test,
-      mockitoScala          % Test,
-      mockitoScalaScalaTest % Test
+      jdbc,
+      postgresql
     ),
-    play.sbt.PlayInternalKeys.playCompileEverything ~= (_.map(
-      _.copy(compilations = sbt.internal.inc.Compilations.of(Seq.empty))))
+    assembly / test := {
+      // FIXME: DRY
+      (domain / assemblyPackageDependency / test).value
+      (playAppExtension / assemblyPackageDependency / test).value
+      (playAppPort / assemblyPackageDependency / test).value
+      (playAppUseCase / assemblyPackageDependency / test).value
+      (playAppDriver / assemblyPackageDependency / test).value
+      (playAppGateway / assemblyPackageDependency / test).value
+    }
   )
   .enablePlugins(PlayScala)
   .disablePlugins(PlayLayoutPlugin)
-  .dependsOn(domain)
+  .dependsOn(domain, playAppExtension, playAppPort, playAppUseCase, playAppDriver, playAppGateway)
+  .settings(commonSettings: _*)
 
 lazy val abstractTypeMember = (project in file("abstractTypeMember"))
   .settings(
@@ -87,5 +149,16 @@ lazy val commonSettings = Seq(
   assembly / assemblyJarName := {
     val projectName = name.value
     s"$projectName.jar"
-  }
+  },
+  assemblyMergeStrategy in assembly := {
+    case "application.conf" => MergeStrategy.concat
+    case "play/reference-overrides.conf" => MergeStrategy.concat
+    case "module-info.class" => MergeStrategy.discard
+    case x =>
+      val oldStrategy = (assemblyMergeStrategy in assembly).value
+      oldStrategy(x)
+  },
+  excludeDependencies ++= Seq(
+    ExclusionRule("commons-logging", "commons-logging")
+  )
 )
