@@ -1,6 +1,6 @@
 package com.example
 
-import com.example.MockitoScalaTest.{ ItemId, Order, OrderId, Orders }
+import com.example.MockitoScalaTest.{ ContainerF, ItemId, Order, OrderId, Orders, UsingContainer }
 import org.mockito.{ ArgumentMatchersSugar, MockitoSugar }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -21,6 +21,15 @@ class MockitoScalaTest extends AnyWordSpec with Matchers with MockitoSugar with 
       when(orders.cancel(eqTo(OrderId("orderId")))) thenReturn ordersExceptCancel
       orders.cancel(OrderId("orderId")) shouldBe ordersExceptCancel
       orders.cancel(OrderId("orderId")) shouldNot be(orders)
+    }
+
+    "success for higher kind type" in {
+      val containerMock = mock[ContainerF[Option, String]]
+      when(containerMock.v).thenReturn(Some("hoge"))
+
+      new UsingContainer[Option] {
+        val container = containerMock
+      }.get shouldBe Some("hoge")
     }
   }
 
@@ -60,5 +69,15 @@ object MockitoScalaTest {
     def canShip: Boolean = list.forall(_.paid)
 
     def cancel(orderId: OrderId): Orders = list.filterNot(_.orderId == orderId) pipe Orders
+  }
+
+  trait ContainerF[F[_], A] {
+    def v: F[A]
+  }
+
+  trait UsingContainer[F[_]] {
+    val container: ContainerF[F, String]
+
+    def get: F[String] = container.v
   }
 }
