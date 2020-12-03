@@ -39,7 +39,8 @@ lazy val playAppUseCase = (project in file("playApp/usecase"))
     libraryDependencies ++= Seq(
       guice,
       scalaTestCore % Test,
-      scalamock     % Test
+      scalamock     % Test,
+      mockitoScala  % Test
     )
   )
   .dependsOn(domain, playAppExtension % "test->test;compile->compile", playAppPort)
@@ -124,6 +125,15 @@ lazy val freer = (project in file("freer"))
 lazy val zio = (project in file("zio"))
   .settings(
     name := "zio"
+  )
+
+lazy val trial = (project in file("trial"))
+  .settings(
+    name := "trial",
+    libraryDependencies ++= Seq(
+      scalaTestCore % Test,
+      mockitoScala  % Test
+    )
   )
 
 lazy val commonSettings = Seq(

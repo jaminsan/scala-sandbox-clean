@@ -1,7 +1,7 @@
 package com.example.usecase
 
 import com.example.`extension`.FutureUtil.FutureOps
-import com.example.`extension`.{ IOContext, NoTrasactionTxRunner }
+import com.example.`extension`.{ IOContext, NoTransactionTxRunner }
 import com.example.domain.{ ItemStock, Order }
 import com.example.port.{ ItemStockPort, OrderPort }
 import org.scalamock.scalatest.MockFactory
@@ -43,6 +43,6 @@ class CreateOrderUseCaseTest extends AnyFlatSpec with MockFactory {
   trait withMock {
     val itemStockPort = mock[ItemStockPort]
     val orderPort     = mock[OrderPort]
-    val sut           = new CreateOrderUseCase(new NoTrasactionTxRunner, itemStockPort, orderPort)
+    val sut           = new CreateOrderUseCase(new NoTransactionTxRunner, itemStockPort, orderPort)
   }
 }
