@@ -25,7 +25,8 @@ class OrderHandler @Inject() (
       Future.successful(NotFound(s"Item not found itemId:$itemId"))
     }
 
-    runTransactionally(implicit ctx => createOrderUseCase.run(req.customerId, req.itemId, req.quantity))
+    createOrderUseCase
+      .run(req.customerId, req.itemId, req.quantity)
       .map { order =>
         PostOrderResponse(order.orderId)
           .pipe(Json.toJson(_))
@@ -35,20 +36,18 @@ class OrderHandler @Inject() (
   }
 
   def getOrder(orderId: String) = Action.async {
-    readOnly { implicit ctx =>
-      fetchOrderUseCase.run(orderId).map {
-        case None =>
-          NotFound(s"Order not found orderId:$orderId")
+    fetchOrderUseCase.run(orderId).map {
+      case None =>
+        NotFound(s"Order not found orderId:$orderId")
 
-        case Some(order) =>
-          GetOrderResponse(
-            orderId = order.orderId,
-            customerId = order.customerId,
-            orderItem = GetOrderOrderItemResponse(itemId = order.orderItem.itemId, quantity = order.orderItem.quantity)
-          )
-            .pipe(Json.toJson(_))
-            .pipe(Ok(_))
-      }
+      case Some(order) =>
+        GetOrderResponse(
+          orderId = order.orderId,
+          customerId = order.customerId,
+          orderItem = GetOrderOrderItemResponse(itemId = order.orderItem.itemId, quantity = order.orderItem.quantity)
+        )
+          .pipe(Json.toJson(_))
+          .pipe(Ok(_))
     }
   }
 }
